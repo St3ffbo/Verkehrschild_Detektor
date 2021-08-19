@@ -69,10 +69,10 @@ cropped_image2 = bwareaopen(cropped_image , area_threshold);
 [ny, nx] = size(cropped_image2);
 center = round([nx ny]/2);
 
-figure;
+figure('Name','groeßte Area vs. gefilterte Areas nach Threshhold');
 cropped_image2 = imfill(cropped_image2, center);
 
-cropped_img2_props = regionprops(cropped_image, 'Area');
+cropped_img2_props = regionprops(cropped_image2, 'Area');
 r_areas = [];
 if (~isempty(cropped_img2_props))
     r_areas = extractfield(cropped_img2_props, 'Area');
@@ -80,11 +80,10 @@ end
 
 max_area = max(r_areas);
 cropped_image3 = bwareaopen(cropped_image2, max_area);
-%bwareaopen benutzt intern Area von regionprops. outlines werden nicht als
-%Area erkannt. boundaries erkennt aber später die outline als area.
+
+
 imshowpair(cropped_image3, cropped_image2, 'montage')
-%Nachschauen warum bwareaopen nicht funktioniert. evtl mit bwconncomp
-%nachbauen
+
 boundaries = bwboundaries(cropped_image3);
 boundaries = boundaries{1};
 
