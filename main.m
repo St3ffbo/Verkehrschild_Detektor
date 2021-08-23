@@ -3,57 +3,42 @@ close all;
 clc;
 
 %% Let the user select an image and load it.
-
-[filepath ,user_canceled] = imgetfile('InitialPath','.\resources');
+[filepath, user_canceled] = imgetfile('InitialPath','.\resources');
 image = imread(filepath);
 image = imresize(image, [1024 NaN]);
 
 %% Apply color masks on image and get results as black white images.
+[bw_red_mask, ~] = redmask(image);      % Red.
 
-bwMask_ofRed = redmask(image);      % Red.
-
-%% Determine coherent areas in black white images.
-
-bwMark_img_props = regionprops(bwMask_ofRed, 'Area', 'BoundingBox');
-r_areas = [];
-boundingboxes = reshape(extractfield(bwMark_img_props, 'BoundingBox'), 4, [])';
-
-if (~isempty(bwMark_img_props))
-    r_areas = extractfield(bwMark_img_props, 'Area');
-end
-max_area = max(r_areas);
-
-%% Determine relevant areas by selecting the biggest one and those that have at least 1/4 of the biggest area's size.
-area_threshold = round((max_area / 4), 0);
-bw_image_ofRed = bwareaopen(bwMask_ofRed , area_threshold); 
+%% Determine relevant areas from color mask images.
+bw_red_mask_relevant_areas = determineRelevantAreas(bw_red_mask);
 
 %% Determine bounding boxes of all relevant areas. Compute rectangles around these boxes that are 10% bigger than the boxes themselves.
-bwMark_img_props = regionprops(bw_image_ofRed, 'BoundingBox');
-boundingboxes = reshape(extractfield(bwMark_img_props, 'BoundingBox'), 4, [])';
-
-bonuspixel = [boundingboxes(1,3)*0.1 boundingboxes(1,4)*0.1];
-rect = [boundingboxes(1,1)-bonuspixel(1) boundingboxes(1,2)-bonuspixel(2) boundingboxes(1,3)+2*bonuspixel(1) boundingboxes(1,4)+2*bonuspixel(2)];
+bounding_boxes = determineBoundingBoxes(bw_red_mask_relevant_areas);
 
 %% Extract edges from given image.
+canny_image = edge(rgb2gray(image), 'canny');
+figure('Name','Canny vs. Relevant Areas of red masked image');
+imshowpair(canny_image, bw_red_mask_relevant_areas, 'montage')
 
-canny_ofImg = edge(rgb2gray(image), 'canny');
-figure('Name','Canny vs. redMask');
-imshowpair(canny_ofImg, bw_image_ofRed, 'montage')
+cropped_images = cropImage(image, bounding_boxes);
+figure;
+imshow(cropped_images(1));
 
 %% Erode image.
 
-bw_image_ofRed = imfill(bw_image_ofRed, 'holes');
+bw_red_mask_relevant_areas = imfill(bw_red_mask_relevant_areas, 'holes');
 figure('Name','flatArea vs. Erode');
 se = strel(ones(20, 20));
-erode_BW = imerode(bw_image_ofRed, se);
-%imshow(~erode_BW + bw_image_ofRed);
-imshowpair(bw_image_ofRed, erode_BW, 'montage')
+erode_BW = imerode(bw_red_mask_relevant_areas, se);
+%imshow(~erode_BW + bw_red_mask_relevant_areas);
+imshowpair(bw_red_mask_relevant_areas, erode_BW, 'montage')
 
-canny_and_erode = canny_ofImg - erode_BW;
+canny_and_erode = canny_image - erode_BW;
 canny_and_erode = canny_and_erode>0;
 
 figure('Name','Canny and erode');
-imshowpair(canny_ofImg, canny_and_erode, 'montage')
+imshowpair(canny_image, canny_and_erode, 'montage')
 
 %imshowpair(image, sobel_Image, 'montage')
 figure;
@@ -66,15 +51,15 @@ figure;
 imshow(cropped_image)
 
 cropped_img_props = regionprops(cropped_image, 'Area');
-r_areas = [];
+bw_red_mask_areas = [];
 
 if (~isempty(cropped_img_props))
-    r_areas = extractfield(cropped_img_props, 'Area');
+    bw_red_mask_areas = extractfield(cropped_img_props, 'Area');
 end
-max_area = max(r_areas);
+bw_red_mask_max_area = max(bw_red_mask_areas);
 
-area_threshold = round((max_area / 4), 0);
-cropped_image2 = bwareaopen(cropped_image , area_threshold);
+max_area_threshold = round((bw_red_mask_max_area / 4), 0);
+cropped_image2 = bwareaopen(cropped_image , max_area_threshold);
 [ny, nx] = size(cropped_image2);
 center = round([nx ny]/2);
 
@@ -82,13 +67,13 @@ figure('Name','groeßte Area vs. gefilterte Areas nach Threshhold');
 cropped_image2 = imfill(cropped_image2, center);
 
 cropped_img2_props = regionprops(cropped_image2, 'Area');
-r_areas = [];
+bw_red_mask_areas = [];
 if (~isempty(cropped_img2_props))
-    r_areas = extractfield(cropped_img2_props, 'Area');
+    bw_red_mask_areas = extractfield(cropped_img2_props, 'Area');
 end
 
-max_area = max(r_areas);
-cropped_image3 = bwareaopen(cropped_image2, max_area);
+bw_red_mask_max_area = max(bw_red_mask_areas);
+cropped_image3 = bwareaopen(cropped_image2, bw_red_mask_max_area);
 
 
 imshowpair(cropped_image3, cropped_image2, 'montage')
