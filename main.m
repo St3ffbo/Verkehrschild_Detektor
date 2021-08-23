@@ -2,12 +2,17 @@ clear;
 close all;
 clc;
 
+%% Let the user select an image and load it.
 
 [filepath ,user_canceled] = imgetfile('InitialPath','.\resources');
 image = imread(filepath);
 image = imresize(image, [1024 NaN]);
 
-bwMask_ofRed = redmask(image);      %gute Erkennung der roten Fläche
+%% Apply color masks on image and get results as black white images.
+
+bwMask_ofRed = redmask(image);      % Red.
+
+%% Determine coherent areas in black white images.
 
 bwMark_img_props = regionprops(bwMask_ofRed, 'Area', 'BoundingBox');
 r_areas = [];
@@ -18,20 +23,24 @@ if (~isempty(bwMark_img_props))
 end
 max_area = max(r_areas);
 
+%% Determine relevant areas by selecting the biggest one and those that have at least 1/4 of the biggest area's size.
 area_threshold = round((max_area / 4), 0);
 bw_image_ofRed = bwareaopen(bwMask_ofRed , area_threshold); 
 
+%% Determine bounding boxes of all relevant areas. Compute rectangles around these boxes that are 10% bigger than the boxes themselves.
 bwMark_img_props = regionprops(bw_image_ofRed, 'BoundingBox');
 boundingboxes = reshape(extractfield(bwMark_img_props, 'BoundingBox'), 4, [])';
 
 bonuspixel = [boundingboxes(1,3)*0.1 boundingboxes(1,4)*0.1];
 rect = [boundingboxes(1,1)-bonuspixel(1) boundingboxes(1,2)-bonuspixel(2) boundingboxes(1,3)+2*bonuspixel(1) boundingboxes(1,4)+2*bonuspixel(2)];
 
+%% Extract edges from given image.
+
 canny_ofImg = edge(rgb2gray(image), 'canny');
-
-
 figure('Name','Canny vs. redMask');
 imshowpair(canny_ofImg, bw_image_ofRed, 'montage')
+
+%% Erode image.
 
 bw_image_ofRed = imfill(bw_image_ofRed, 'holes');
 figure('Name','flatArea vs. Erode');
