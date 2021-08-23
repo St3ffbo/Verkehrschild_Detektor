@@ -23,7 +23,7 @@ imshowpair(canny_image, bw_red_mask_relevant_areas, 'montage')
 
 cropped_images = cropImage(image, bounding_boxes);
 figure;
-imshow(cropped_images(1));
+montage(cropped_images);
 
 %% Erode image.
 
