@@ -4,8 +4,15 @@ clc;
 
 %% Let the user select an image and load it.
 [filepath, user_canceled] = imgetfile('InitialPath','.\resources');
+if user_canceled 
+    return; 
+end
+
 image = imread(filepath);
-image = imresize(image, [1024 NaN]);
+original_image = imresize(image, [1024 NaN]);
+image = imgaussfilt(image, 2);
+figure('Name', 'Original image vs. blurred image');
+montage({original_image, image});
 
 %% Apply color masks on image and get results as black white images.
 [bw_red_mask, ~] = redmask(image);      % Red.
@@ -15,28 +22,20 @@ bw_red_mask_relevant_areas = determineRelevantAreas(bw_red_mask);
 
 %% Determine bounding boxes of all relevant areas. Crop relevant areas from image using the bounding boxes.
 bounding_boxes = determineBoundingBoxes(bw_red_mask_relevant_areas);
-cropped_images = cropImage(image, bounding_boxes);
+[cropped_images_original, cropped_images_bw] = cropImage(image, bw_red_mask_relevant_areas, bounding_boxes);
 figure('Name', 'Relevant area(s) cropped from image');
-montage(cropped_images);
+montage([cropped_images_original cropped_images_bw], 'Size', [2 size(cropped_images_original, 2)]);
 
 %% Extract edges from given image.
-canny_images = findEdges(cropped_images, 'canny');
-figure('Name', 'Edge image(s) of cropped image(s)');
-montage(canny_images);
+canny_images_original = findEdges(cropped_images_original, 'canny');
+figure('Name', 'Edge image(s) of original cropped image(s)');
+montage(canny_images_original);
 
 %% Erode image.
-bw_red_mask_relevant_areas = imfill(bw_red_mask_relevant_areas, 'holes');
-figure('Name','Original relevant areas vs. eroded relevant areas');
-se = strel(ones(20, 20));
-erode_BW = imerode(bw_red_mask_relevant_areas, se);
-%imshow(~erode_BW + bw_red_mask_relevant_areas);
-imshowpair(bw_red_mask_relevant_areas, erode_BW, 'montage')
-
-canny_and_erode = canny_image - erode_BW;
-canny_and_erode = canny_and_erode>0;
-
-figure('Name','Edge image vs. eroded canny image');
-imshowpair(canny_image, canny_and_erode, 'montage')
+filled_images_bw = fillRegions(cropped_images_bw, canny_images_original);
+figure('Name', 'Filled images');
+montage([cropped_images_original filled_images_bw], 'Size', [2 size(cropped_images_original, 2)]);
+return;
 
 cropped_img_props = regionprops(cropped_image, 'Area');
 bw_red_mask_areas = [];

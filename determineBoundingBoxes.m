@@ -3,7 +3,7 @@
 % Input: Black-white image resulting from applied color mask containing only the relevant areas.
 % Output: Array of bounding boxes for each relevant area.
 
-function bounding_boxes = determineBoundingBoxes(bw_color_mask_relevant_areas)
+function [bounding_boxes] = determineBoundingBoxes(bw_color_mask_relevant_areas)
 %% Determine the bounding boxes of all areas given in the black-white image.
 bw_color_mask_relevant_areas_img_props = regionprops(bw_color_mask_relevant_areas, 'BoundingBox');
 bw_color_mask_relevant_areas_bb = reshape(extractfield(bw_color_mask_relevant_areas_img_props, 'BoundingBox'), 4, [])';
