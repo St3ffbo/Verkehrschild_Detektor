@@ -13,22 +13,20 @@ image = imresize(image, [1024 NaN]);
 %% Determine relevant areas from color mask images.
 bw_red_mask_relevant_areas = determineRelevantAreas(bw_red_mask);
 
-%% Determine bounding boxes of all relevant areas. Compute rectangles around these boxes that are 10% bigger than the boxes themselves.
+%% Determine bounding boxes of all relevant areas. Crop relevant areas from image using the bounding boxes.
 bounding_boxes = determineBoundingBoxes(bw_red_mask_relevant_areas);
-
-%% Extract edges from given image.
-canny_image = edge(rgb2gray(image), 'canny');
-figure('Name','Canny vs. Relevant Areas of red masked image');
-imshowpair(canny_image, bw_red_mask_relevant_areas, 'montage')
-
 cropped_images = cropImage(image, bounding_boxes);
-figure;
+figure('Name', 'Relevant area(s) cropped from image');
 montage(cropped_images);
 
-%% Erode image.
+%% Extract edges from given image.
+canny_images = findEdges(cropped_images, 'canny');
+figure('Name', 'Edge image(s) of cropped image(s)');
+montage(canny_images);
 
+%% Erode image.
 bw_red_mask_relevant_areas = imfill(bw_red_mask_relevant_areas, 'holes');
-figure('Name','flatArea vs. Erode');
+figure('Name','Original relevant areas vs. eroded relevant areas');
 se = strel(ones(20, 20));
 erode_BW = imerode(bw_red_mask_relevant_areas, se);
 %imshow(~erode_BW + bw_red_mask_relevant_areas);
@@ -37,18 +35,8 @@ imshowpair(bw_red_mask_relevant_areas, erode_BW, 'montage')
 canny_and_erode = canny_image - erode_BW;
 canny_and_erode = canny_and_erode>0;
 
-figure('Name','Canny and erode');
+figure('Name','Edge image vs. eroded canny image');
 imshowpair(canny_image, canny_and_erode, 'montage')
-
-%imshowpair(image, sobel_Image, 'montage')
-figure;
-imshow(image)
-rectangle('Position',rect,'EdgeColor', 'Magenta', 'LineWidth', 4)
-
-cropped_image = imcrop(canny_and_erode, rect);
-
-figure;
-imshow(cropped_image)
 
 cropped_img_props = regionprops(cropped_image, 'Area');
 bw_red_mask_areas = [];

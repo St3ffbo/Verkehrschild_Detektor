@@ -1,9 +1,9 @@
-% Determines all relevant coherent areas in a black-white image that resulted from applying a color mask.
+% Determines all relevant coherent areas in a black-white image that 
+% resulted from applying a color mask.
 % Input: Black-white image resulting from applied color mask.
 % Output: Black-white image containing biggest coherent areas.
 
 function bw_relevant_areas = determineRelevantAreas(bw_color_mask)
-
 %% Determine coherent areas in black white images.
 bw_color_mask_img_props = regionprops(bw_color_mask, 'Area');
 
