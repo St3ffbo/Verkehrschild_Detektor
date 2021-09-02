@@ -10,7 +10,8 @@ end
 
 image = imread(filepath);
 original_image = imresize(image, [1024 NaN]);
-image = imgaussfilt(image, 2);
+image = imgaussfilt(image, .5);
+image = imadjust(image, [.2 .6],[]);
 figure('Name', 'Original image vs. blurred image');
 montage({original_image, image});
 
@@ -32,26 +33,33 @@ figure('Name', 'Edge image(s) of original cropped image(s)');
 montage(canny_images_original);
 
 %% Erode image.
-filled_images_bw = fillRegions(cropped_images_bw, canny_images_original);
+outline_images_bw = fillRegions(cropped_images_bw, canny_images_original);
 figure('Name', 'Filled images');
-montage([cropped_images_original filled_images_bw], 'Size', [2 size(cropped_images_original, 2)]);
+montage([cropped_images_original outline_images_bw], 'Size', [2 size(cropped_images_original, 2)]);
+
+%% Create Distance Matrix.
+distances_to_outlines = createDistanceMatrix(cropped_images_bw);
+figure('Name', 'DistancePlots');
+%montage(distances_to_outlines, 'Size', [2 size(distances_to_outlines, 2)]);
+plot(distances_to_outlines{1});
+
 return;
 
-cropped_img_props = regionprops(cropped_image, 'Area');
-bw_red_mask_areas = [];
-
-if (~isempty(cropped_img_props))
-    bw_red_mask_areas = extractfield(cropped_img_props, 'Area');
-end
-bw_red_mask_max_area = max(bw_red_mask_areas);
-
-max_area_threshold = round((bw_red_mask_max_area / 4), 0);
-cropped_image2 = bwareaopen(cropped_image , max_area_threshold);
-[ny, nx] = size(cropped_image2);
-center = round([nx ny]/2);
-
-figure('Name','groeßte Area vs. gefilterte Areas nach Threshhold');
-cropped_image2 = imfill(cropped_image2, center);
+% cropped_img_props = regionprops(cropped_image, 'Area');
+% bw_red_mask_areas = [];
+% 
+% if (~isempty(cropped_img_props))
+%     bw_red_mask_areas = extractfield(cropped_img_props, 'Area');
+% end
+% bw_red_mask_max_area = max(bw_red_mask_areas);
+% 
+% max_area_threshold = round((bw_red_mask_max_area / 4), 0);
+% cropped_image2 = bwareaopen(cropped_image , max_area_threshold);
+% [ny, nx] = size(cropped_image2);
+% center = round([nx ny]/2);
+% 
+% figure('Name','groeßte Area vs. gefilterte Areas nach Threshhold');
+% cropped_image2 = imfill(cropped_image2, center);
 
 cropped_img2_props = regionprops(cropped_image2, 'Area');
 bw_red_mask_areas = [];

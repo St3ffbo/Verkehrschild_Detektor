@@ -15,5 +15,4 @@ bw_color_mask_max_area = max(bw_color_mask_areas);
 %% Determine relevant areas by selecting the biggest one and those that have at least 1/4 of the biggest area's size.
 max_area_threshold = round((bw_color_mask_max_area / 4), 0);
 bw_relevant_areas = bwareaopen(bw_color_mask , max_area_threshold); 
-
 end

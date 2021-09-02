@@ -3,7 +3,7 @@
 % Input: Original rgb image, bounding_boxes array.
 % Output: Cell array of all rgb image crops.
 
-function [cropped_images_original cropped_images_bw] = cropImage(image, bw_color_mask_relevant_areas, bounding_boxes)
+function [cropped_images_original,cropped_images_bw] = cropImage(image, bw_color_mask_relevant_areas, bounding_boxes)
 %% Create array that holds the cropped images. 
 number_of_bounding_boxes = size(bounding_boxes, 1);
 cropped_images_original = cell(1, number_of_bounding_boxes);
