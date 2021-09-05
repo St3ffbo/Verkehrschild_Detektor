@@ -12,9 +12,12 @@ for image_index = 1:number_images
    dilated_image = imdilate(cropped_images_bw{image_index}, sd);
    eroded_image = imerode(dilated_image, se);
    
-   filled_images_bw{image_index} = eroded_image;
+   %only use largest area
+   eroded_image_props = regionprops(eroded_image, 'Area');
+   eroded_image_areas = extractfield(eroded_image_props, 'Area');
    
-%    figure('Name', 'finetuned image with dilate & erode');
-%    montage([cropped_images_bw filled_images_bw]);   
+   eroded_image_big_area = bwareaopen(eroded_image, max(eroded_image_areas));
+   filled_images_bw{image_index} = eroded_image_big_area;
+      
 end
 end
