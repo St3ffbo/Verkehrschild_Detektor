@@ -1,3 +1,8 @@
+% Classifies abstract traffic sign objects based on their properties.
+% Input: The original image and and the abstract traffic signs created by
+% the pipeline.
+% Output: The result image containing the traffic sign annotations.
+
 function annotated_image = classifyAbstractTrafficSigns(original_image, abstract_traffic_signs)
 
 % Get copy of original_image to annotate.

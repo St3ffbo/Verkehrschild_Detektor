@@ -1,3 +1,5 @@
+% Defines an object that could possibly be a traffic sign.
+
 classdef AbstractTrafficSign
     properties
         color
