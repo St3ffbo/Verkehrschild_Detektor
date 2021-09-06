@@ -6,6 +6,11 @@ for image_index = 1:number_images
     
     y = abs(fft(distances_to_outlines{image_index}));
     y = y(2:10);
+    [M,I] = max(y);
+    
+    amp_ratios = y./M
+    amp_ratio_mean = mean(amp_ratios)
+    
     f = (2:10)-1;
     figure('Name', 'fft of outline distances');
     avg = mean(y);

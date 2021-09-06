@@ -11,10 +11,10 @@ for image_index = 1:number_images
 
     distances_to_outline{image_index} = sqrt((boundaries(:,2) - center(1)).^2 + ((boundaries(:,1) - center(2)).^2));
 
-%     figure('Name', 'distance measure with centre');
-%     imshow(cropped_images_bw_finetuned{image_index})
-%     hold on;
-%     plot(center(1),center(2),'*r')
+    figure('Name', 'distance measure with centre');
+    imshow(cropped_images_bw_finetuned{image_index})
+    hold on;
+    plot(center(1),center(2),'*r')
 %     hold on;
 %     x = boundaries(:,1);
 %     y = boundaries(:,2);
