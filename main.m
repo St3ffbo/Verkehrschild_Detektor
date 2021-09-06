@@ -21,7 +21,7 @@ figure('Name', 'Original image vs. blurred image');
 montage({original_image, image});
 
 %% Apply color masks on image and get results as black white images.
-[bw_red_mask, ~] = redmask(image);      % Red.
+[bw_red_mask, ~] = colorMask(Color.Red, image);      % Red.
 
 %% Determine relevant areas from color mask images.
 bw_red_mask_relevant_areas = determineRelevantAreas(bw_red_mask);

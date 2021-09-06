@@ -20,12 +20,16 @@ for index = 1:number_traffic_signs
                 annotation_string = 'Vorfahrt gewähren';
             case 8
                 annotation_string = 'Stop';
+            otherwise
+                annotation_string = 'Unknown';
         end
     elseif (abstract_traffic_sign.color == Color.Yellow)
         % Check cases for yellow traffic signs.
         switch abstract_traffic_sign.number_vertices
             case 4
                 annotation_string = 'Vorfahrtstraße';
+            otherwise
+                annotation_string = 'Unknown';
         end
     elseif (abstract_traffic_sign.color == Color.Unknown)
         % Unknown color.
