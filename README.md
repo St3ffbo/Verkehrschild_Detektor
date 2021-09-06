@@ -14,3 +14,5 @@ Das Programm wurde in MATLAB entwickelt. Um es ausführen zu können, werden fol
 *	Mapping Toolbox
 *	Video and Image Blockset
 
+Nach Installation der Toolboxen muss die *main.m* ausgeführt werden. Sie öffnet ein Dialogfenster, in dem das zu untersuchende Bild ausgewählt werden kann.
+
