@@ -3,7 +3,12 @@
 % the pipeline.
 % Output: The result image containing the traffic sign annotations.
 
-function annotated_image = classifyAbstractTrafficSigns(original_image, abstract_traffic_signs)
+function annotated_image = classifyAbstractTrafficSigns(original_image, abstract_traffic_signs, debug_mode)
+
+if abstract_traffic_signs{1} == -1
+    annotated_image = original_image;
+    return
+end
 
 % Get copy of original_image to annotate.
 number_traffic_signs = size(abstract_traffic_signs, 2);
@@ -44,7 +49,12 @@ for index = 1:number_traffic_signs
     end
    
     % Insert object annotation in resulting image.
-    annotated_image = insertObjectAnnotation(annotated_image, 'rectangle', abstract_traffic_sign.bounding_box, annotation_string,...
-        'TextBoxOpacity', 0.9, 'FontSize', 18, 'LineWidth', 3, 'Color', 'green');    
+    if strcmp(annotation_string, 'Unknown') && debug_mode
+        annotated_image = insertObjectAnnotation(annotated_image, 'rectangle', abstract_traffic_sign.bounding_box, annotation_string,...
+            'TextBoxOpacity', 0.9, 'FontSize', 18, 'LineWidth', 3, 'Color', 'red');    
+    elseif ~strcmp(annotation_string, 'Unknown')
+        annotated_image = insertObjectAnnotation(annotated_image, 'rectangle', abstract_traffic_sign.bounding_box, annotation_string,...
+            'TextBoxOpacity', 0.9, 'FontSize', 18, 'LineWidth', 3, 'Color', 'green'); 
+    end
 end
 end

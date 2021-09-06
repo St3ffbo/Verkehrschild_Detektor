@@ -34,82 +34,15 @@ if debug_mode
     montage({original_image, image});
 end
 
-%% Apply color masks on image and get results as black white images.
-[bw_red_mask, ~] = colorMask(Color.Red, image);         % Red.
-[bw_yellow_mask, ~] = colorMask(Color.Yellow, image);   % Yellow.
-if debug_mode
-    figure('Name', 'Color masks applied');
-    subplot(1, 2, 1);
-    imshow(bw_red_mask);
-    title('Red-masked image');
-    subplot(1, 2, 2);
-    imshow(bw_yellow_mask);
-    title('Yellow-masked image');
-end
-%% Determine relevant areas from color mask images.
-bw_red_mask_relevant_areas = determineRelevantAreas(bw_red_mask);
-bw_yellow_mask_relevant_areas = determineRelevantAreas(bw_yellow_mask);
-if debug_mode
-    figure('Name', 'Relevant areas');
-    subplot(1, 2, 1);
-    imshow(bw_red_mask_relevant_areas);
-    title('Red-masked image with relevant areas');
-    subplot(1, 2, 2);
-    imshow(bw_yellow_mask_relevant_areas);
-    title('Yellow-masked image with relevant areas');
-end
+%% Detect and classify traffic signs.
 
-%% Determine bounding boxes of all relevant areas. Crop relevant areas from image using the bounding boxes.
-bounding_boxes = determineBoundingBoxes(bw_red_mask_relevant_areas);
-[cropped_images_original, cropped_images_bw] = cropImage(image, bw_red_mask_relevant_areas, bounding_boxes);
-if debug_mode
-    figure('Name', 'Relevant area(s) cropped from image');
-    montage([cropped_images_original cropped_images_bw], 'Size', [2 size(cropped_images_original, 2)]);
-end
+% Red signs.
+red_abstract_traffic_signs = trafficSignDetection(image, Color.Red, debug_mode);
+annotated_result_image = classifyAbstractTrafficSigns(annotated_result_image, red_abstract_traffic_signs, debug_mode);
 
-%% Dilate and erode image each cropped image. Return cropped images with only the biggest area contained.
- cropped_images_bw_finetuned = dilateErode(cropped_images_bw);
- if debug_mode
-    figure('Name', 'Finetuned cropped images');
-    montage([cropped_images_original cropped_images_bw_finetuned], 'Size', [2 size(cropped_images_original, 2)]);
- end
-
-%% Compute distance vectors for each relevant area. Count the area's vertices based on the outline distances.
-distances_to_outlines = createDistanceMatrix(cropped_images_bw_finetuned);
-if debug_mode
-    figure('Name', 'Distance plot for each relevant area');
-    % Plot all distance plots in one subplot.
-    for image_index = 1: length(distances_to_outlines)
-        subplot(length(distances_to_outlines), 1, image_index);
-        plot(distances_to_outlines{image_index});
-        title(strcat('Distance plot of relevant area no. ', num2str(image_index)));
-    end
-end
-
-%% Count the vertices of each relevant area.
-[counted_vertices,fft_arrays]  = vertexCounter(distances_to_outlines);
-%counted_vertices = transpose(repelem(8, size(bounding_boxes, 1))); % TEMP!!!
-
-% Plot FFT of outline distances if desired in one subplot.
-if debug_mode
-    figure('Name', 'FFTs of outline distances');
-    number_images = length(fft_arrays);
-    for image_index = 1:number_images
-        subplot(number_images, 1, image_index);           
-        f = (2:10)-1;        
-        stem(f,fft_arrays{image_index});
-        title(strcat('FFT of distance plot of relevant area no. ', num2str(image_index)));   
-    end
-end
-
-%% Finally classify and annotate traffic signs in the original image.
-
-% Red relevant areas.
-red_abstract_traffic_signs = createAbstractTrafficSigns(Color.Red, counted_vertices, bounding_boxes);
-annotated_result_image = classifyAbstractTrafficSigns(annotated_result_image, red_abstract_traffic_signs);
-
-% TODO: Yellow relevant areas.
-
+% Yellow signs.
+yellow_abstract_traffic_signs = trafficSignDetection(image, Color.Yellow, debug_mode);
+annotated_result_image = classifyAbstractTrafficSigns(annotated_result_image, yellow_abstract_traffic_signs, debug_mode);
 
 % Show annotated result image.
 figure('Name', 'Result');
