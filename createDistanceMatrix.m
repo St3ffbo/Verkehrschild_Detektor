@@ -18,15 +18,8 @@ for image_index = 1:number_images
 
     % Compute the distance to the area center for each pixel (pythagoras).
     distances_to_outline{image_index} = sqrt((boundaries(:,2) - center(1)).^2 + ((boundaries(:,1) - center(2)).^2));
+    temp = round(0.01*length(boundaries));
+    distances_to_outline{image_index} = movmean(distances_to_outline{image_index}, temp);
 
-%     % Debug stuff.
-%     figure('Name', 'distance measure with centre');
-%     imshow(cropped_images_bw_finetuned{image_index})
-%     hold on;
-%     plot(center(1),center(2),'*r')
-%     hold on;
-%     x = boundaries(:,1);
-%     y = boundaries(:,2);
-%     plot(y,x,'*g')S
 end
 end

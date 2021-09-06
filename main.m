@@ -87,8 +87,20 @@ if debug_mode
 end
 
 %% Count the vertices of each relevant area.
-counted_vertices = vertexCounter(distances_to_outlines, debug_mode);
-counted_vertices = transpose(repelem(8, size(bounding_boxes, 1))); % TEMP!!!
+[counted_vertices,fft_arrays]  = vertexCounter(distances_to_outlines);
+%counted_vertices = transpose(repelem(8, size(bounding_boxes, 1))); % TEMP!!!
+
+% Plot FFT of outline distances if desired in one subplot.
+if debug_mode
+    figure('Name', 'FFTs of outline distances');
+    number_images = length(fft_arrays);
+    for image_index = 1:number_images
+        subplot(number_images, 1, image_index);           
+        f = (2:10)-1;        
+        stem(f,fft_arrays{image_index});
+        title(strcat('FFT of distance plot of relevant area no. ', num2str(image_index)));   
+    end
+end
 
 %% Finally classify and annotate traffic signs in the original image.
 
@@ -98,13 +110,7 @@ annotated_result_image = classifyAbstractTrafficSigns(annotated_result_image, re
 
 % TODO: Yellow relevant areas.
 
+
 % Show annotated result image.
 figure('Name', 'Result');
 imshow(annotated_result_image);
-
-%% Some other stuff.
-% y = abs(fft(distance_vector));
-% y = y(1:length(y)/2);
-% 
-% f = 0:length(y)-1;
-% stem(f,y)
