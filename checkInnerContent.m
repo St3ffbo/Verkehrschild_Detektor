@@ -41,9 +41,7 @@ for index = 1:number_images
             imshow(red_portion_mask);  
 
             % Compute inner portion of sign.
-            inner_portion_mask = logical(current_cropped_mask - red_portion_mask);
-            figure('Name', 'Inner portion');
-            imshow(inner_portion_mask);  
+            inner_portion_mask = logical(current_cropped_mask - red_portion_mask);            
 
             % Extract relevant areas from inner portion by removing all
             % those areas whose size is less than the half of the biggest
@@ -57,6 +55,10 @@ for index = 1:number_images
             inner_portion_mask = bwareaopen(inner_portion_mask, max_area_threshold);        
             inner_portion_props = regionprops(inner_portion_mask, 'Area');
             inner_portion_areas = extractfield(inner_portion_props, 'Area');
+            
+            % Plot filtered inner portion mask.
+            figure('Name', 'Inner portion');
+            imshow(inner_portion_mask);  
             
             % Get number of inner portion areas.
             number_inner_areas = length(inner_portion_areas);

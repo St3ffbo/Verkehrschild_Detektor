@@ -3,7 +3,7 @@ close all;
 clc;
 
 %% Variables.
-debug_mode = false;
+debug_mode = true;
 
 %% Let the user select an image and load it.
 [filepath, user_canceled] = imgetfile('InitialPath','.\resources');
@@ -28,20 +28,20 @@ if debug_mode
 end
 
 %% Adjust the image's contrast.
-red_contrast_adjust = [.2 0 0 ; .6 1 1];
-yellow_contrast_adjust = [];
-
-image = imadjust(image, [.2 .6],[]);
-if debug_mode
-    figure('Name', 'Original image vs. gaussian-blurred and contrast-corrected image');
-    montage({original_image, image});
-end
+% red_contrast_adjust = [.2 0 0 ; .6 1 1];
+% yellow_contrast_adjust = [];
+% 
+% image = imadjust(image, [.2 .6],[]);
+% if debug_mode
+%     figure('Name', 'Original image vs. gaussian-blurred and contrast-corrected image');
+%     montage({original_image, image});
+% end
 
 %% Detect and classify traffic signs.
 
 % Red signs.
-red_abstract_traffic_signs = trafficSignDetection(image, Color.Red, debug_mode);
-annotated_result_image = classifyAbstractTrafficSigns(annotated_result_image, red_abstract_traffic_signs, debug_mode);
+% red_abstract_traffic_signs = trafficSignDetection(image, Color.Red, debug_mode);
+% annotated_result_image = classifyAbstractTrafficSigns(annotated_result_image, red_abstract_traffic_signs, debug_mode);
 
 % Yellow signs.
 yellow_abstract_traffic_signs = trafficSignDetection(image, Color.Yellow, debug_mode);

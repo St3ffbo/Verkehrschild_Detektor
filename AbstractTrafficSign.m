@@ -6,7 +6,7 @@ classdef AbstractTrafficSign
         number_vertices
         bounding_box
         inner_content
-        ends
+    end
     methods
         function obj = AbstractTrafficSign(color, number_vertices, bounding_box, inner_content)
                 obj.color = color;
