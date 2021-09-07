@@ -5,10 +5,14 @@
 
 function distances_to_outline = createDistanceMatrix(cropped_images_bw_finetuned)
 
+% Determine number of specified images.
 number_images = size(cropped_images_bw_finetuned, 2);
+
+% Create the cell array to stroe the distances in.
 distances_to_outline = cell(1, number_images);
 
 for image_index = 1:number_images     
+    
     % Get the center coordinates of the current area.
     outline_props = regionprops(cropped_images_bw_finetuned{image_index}, 'Centroid');
     center = round(extractfield(outline_props, 'Centroid'),0);
@@ -22,4 +26,5 @@ for image_index = 1:number_images
     distances_to_outline{image_index} = movmean(distances_to_outline{image_index}, temp);
 
 end
+
 end

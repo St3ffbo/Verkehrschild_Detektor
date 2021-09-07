@@ -5,6 +5,7 @@
 % mask. Also, the masked rgb image.
 
 function [BW,masked_rgb_image] = colorMask(color, rgb_image)
+
 % Based on the specified color, apply individual color masks.
 switch(color)
     case Color.Red
@@ -15,4 +16,6 @@ switch(color)
         [BW, masked_rgb_image] = whiteMask(rgb_image);
     case Color.Unknown
         return;
+end
+
 end

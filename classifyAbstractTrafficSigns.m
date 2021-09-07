@@ -5,7 +5,8 @@
 
 function annotated_image = classifyAbstractTrafficSigns(original_image, abstract_traffic_signs, debug_mode)
 
-if abstract_traffic_signs{1} == -1
+% Check whether abstract traffic signs are available.
+if isempty(abstract_traffic_signs)
     annotated_image = original_image;
     return
 end
@@ -56,5 +57,7 @@ for index = 1:number_traffic_signs
         annotated_image = insertObjectAnnotation(annotated_image, 'rectangle', abstract_traffic_sign.bounding_box, annotation_string,...
             'TextBoxOpacity', 0.9, 'FontSize', 18, 'LineWidth', 3, 'Color', 'green'); 
     end
+    
 end
+
 end

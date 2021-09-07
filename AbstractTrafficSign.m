@@ -1,4 +1,4 @@
-% Defines an object that could possibly be a traffic sign.
+% Defines an object that represents a possible traffic sign.
 
 classdef AbstractTrafficSign
     properties
