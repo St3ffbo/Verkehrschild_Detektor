@@ -15,8 +15,8 @@ end
 
 % Remove all areas that have a bounding box smaller than 
 % bb_min_width x bb_min_height.
-bb_min_width = 5;
-bb_min_height = 5;
+bb_min_width = 30;
+bb_min_height = 30;
 deletion_index = 1;
 for index = 1:size(bw_color_mask_bounding_boxes, 1)    
     if (bw_color_mask_bounding_boxes(deletion_index, 3) < bb_min_width) || (bw_color_mask_bounding_boxes(deletion_index, 4) < bb_min_height)
@@ -38,7 +38,7 @@ end
 bw_color_mask_max_area = max(bw_color_mask_areas);
 
 % Define relevant areas as those that have at least 1/4 of the biggest area's size.
-max_area_threshold = round((bw_color_mask_max_area / 4), 0);
+max_area_threshold = round((bw_color_mask_max_area / 5), 0);
 bw_relevant_areas = bwareaopen(bw_color_mask , max_area_threshold); 
 
 end

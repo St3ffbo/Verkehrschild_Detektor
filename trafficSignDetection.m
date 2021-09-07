@@ -85,8 +85,11 @@ function abstract_traffic_signs = trafficSignDetection(image, color, debug_mode)
         end
     end
 
+    %% Extract inner content information from cropped images.    
+    inner_content_information = checkInnerContent(color, cropped_images_bw_finetuned, cropped_images_original);
+    
     %% Finally classify and annotate traffic signs in the original image.
-    abstract_traffic_signs = createAbstractTrafficSigns(color, counted_vertices, bounding_boxes);
+    abstract_traffic_signs = createAbstractTrafficSigns(color, counted_vertices, bounding_boxes, inner_content_information);
     
 end
 

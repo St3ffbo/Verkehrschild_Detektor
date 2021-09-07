@@ -51,8 +51,8 @@ for index = 1:number_traffic_signs
     end
    
     % Adjust bounding box to image with constant border pixels.
-    abstract_traffic_sign.bounding_box(1) = abstract_traffic_sign.bounding_box(1) + 2 * number_constant_pixels;
-    abstract_traffic_sign.bounding_box(2) = abstract_traffic_sign.bounding_box(2) + 2 * number_constant_pixels;
+    abstract_traffic_sign.bounding_box(1) = abstract_traffic_sign.bounding_box(1) + number_constant_pixels;
+    abstract_traffic_sign.bounding_box(2) = abstract_traffic_sign.bounding_box(2) + number_constant_pixels;
     
     % Insert object annotation in resulting image.
     if strcmp(annotation_string, 'Unknown') && debug_mode

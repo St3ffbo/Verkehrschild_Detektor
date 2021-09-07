@@ -4,7 +4,7 @@
 % coordinates per area.
 % Output: A collection of abstract traffic signs.
 
-function abstract_traffic_signs = createAbstractTrafficSigns(color, numbers_vertices_vectors, bounding_boxes)
+function abstract_traffic_signs = createAbstractTrafficSigns(color, numbers_vertices_vectors, bounding_boxes, inner_content_information)
 
 % Get number of vertex numbers and bounding boxes.
 number_vertices = size(numbers_vertices_vectors, 2);
@@ -18,7 +18,7 @@ end
 % Instantiate abstract traffic signs using the specified information.
 abstract_traffic_signs = cell(1, number_bounding_boxes);
 for index = 1:number_bounding_boxes    
-    abstract_traffic_signs{index} = AbstractTrafficSign(color, numbers_vertices_vectors{index}, bounding_boxes(index, :), NaN);    
+    abstract_traffic_signs{index} = AbstractTrafficSign(color, numbers_vertices_vectors{index}, bounding_boxes(index, :), inner_content_information{index});    
 end
 
 end
