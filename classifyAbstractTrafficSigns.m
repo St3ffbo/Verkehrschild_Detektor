@@ -11,9 +11,12 @@ if isempty(abstract_traffic_signs)
     return
 end
 
+% Add constant border pixels to image.
+number_constant_pixels = 20;
+annotated_image = padarray(original_image,[number_constant_pixels number_constant_pixels], 'replicate', 'both');
+
 % Get copy of original_image to annotate.
 number_traffic_signs = size(abstract_traffic_signs, 2);
-annotated_image = padarray(original_image,[20 20], 'replicate', 'both');
 
 % Iterate over each given abstrac traffic sign.
 for index = 1:number_traffic_signs
@@ -47,6 +50,10 @@ for index = 1:number_traffic_signs
         annotation_string = 'Unknown';
     end
    
+    % Adjust bounding box to image with constant border pixels.
+    abstract_traffic_sign.bounding_box(1) = abstract_traffic_sign.bounding_box(1) + 2 * number_constant_pixels;
+    abstract_traffic_sign.bounding_box(2) = abstract_traffic_sign.bounding_box(2) + 2 * number_constant_pixels;
+    
     % Insert object annotation in resulting image.
     if strcmp(annotation_string, 'Unknown') && debug_mode
         annotated_image = insertObjectAnnotation(annotated_image, 'rectangle', abstract_traffic_sign.bounding_box, annotation_string,...
