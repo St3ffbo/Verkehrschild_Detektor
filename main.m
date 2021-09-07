@@ -3,7 +3,7 @@ close all;
 clc;
 
 %% Variables.
-debug_mode = true;
+debug_mode = false;
 
 %% Let the user select an image and load it.
 [filepath, user_canceled] = imgetfile('InitialPath','.\resources');

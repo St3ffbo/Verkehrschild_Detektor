@@ -18,9 +18,10 @@ end
 bb_min_width = 5;
 bb_min_height = 5;
 deletion_index = 1;
-for index = 1:length(bw_color_mask_bounding_boxes)    
-    if (bw_color_mask_bounding_boxes(index, 3) < bb_min_width) || (bw_color_mask_bounding_boxes(index, 4) < bb_min_height)
+for index = 1:size(bw_color_mask_bounding_boxes, 1)    
+    if (bw_color_mask_bounding_boxes(deletion_index, 3) < bb_min_width) || (bw_color_mask_bounding_boxes(deletion_index, 4) < bb_min_height)
         bw_color_mask_areas(deletion_index) = [];
+        bw_color_mask_bounding_boxes(deletion_index, :) = [];
     else
         deletion_index = deletion_index + 1;
     end        
