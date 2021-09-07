@@ -22,8 +22,15 @@ for image_index = 1:number_images
 
     % Compute the distance to the area center for each pixel (pythagoras).
     distances_to_outline{image_index} = sqrt((boundaries(:,2) - center(1)).^2 + ((boundaries(:,1) - center(2)).^2));
-    temp = round(0.01*length(boundaries));
-    distances_to_outline{image_index} = movmean(distances_to_outline{image_index}, temp);
+    
+    % Smmoth the distance graph using a moving average with a window length
+    % of 1% of the number of boundary pixels. If 1% is less than 1, set it
+    % to 1.
+    window = round(0.01*length(boundaries));
+    if window < 1 
+        window = 1;
+    end    
+    distances_to_outline{image_index} = movmean(distances_to_outline{image_index}, window);
 
 end
 

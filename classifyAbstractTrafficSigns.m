@@ -27,8 +27,6 @@ for index = 1:number_traffic_signs
     if (abstract_traffic_sign.color == Color.Red)
         % Check cases for red traffic signs.        
         switch abstract_traffic_sign.number_vertices
-            case 2
-                annotation_string = 'Kreis';
             case 3
                 annotation_string = 'Vorfahrt gewähren';
             case 8

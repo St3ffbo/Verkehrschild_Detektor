@@ -35,6 +35,8 @@ for image_index = 1:number_images
         end
     elseif indices(1) == 3
         vertex_number_array{image_index} = 3;
+    elseif indices(1) == 4
+        vertex_number_array{image_index} = 4;
     elseif indices(1) == 8
         vertex_number_array{image_index} = 8;
     else

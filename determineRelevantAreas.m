@@ -6,10 +6,31 @@
 function bw_relevant_areas = determineRelevantAreas(bw_color_mask)
 
 % Determine coherent areas in black white images.
-bw_color_mask_img_props = regionprops(bw_color_mask, 'Area');
+bw_color_mask_img_props = regionprops(bw_color_mask, 'Area', 'BoundingBox');
 
 if (~isempty(bw_color_mask_img_props))
     bw_color_mask_areas = extractfield(bw_color_mask_img_props, 'Area');
+    bw_color_mask_bounding_boxes = reshape(extractfield(bw_color_mask_img_props, 'BoundingBox'), 4, [])';
+end
+
+% Remove all areas that have a bounding box smaller than 
+% bb_min_width x bb_min_height.
+bb_min_width = 5;
+bb_min_height = 5;
+deletion_index = 1;
+for index = 1:length(bw_color_mask_bounding_boxes)    
+    if (bw_color_mask_bounding_boxes(index, 3) < bb_min_width) || (bw_color_mask_bounding_boxes(index, 4) < bb_min_height)
+        bw_color_mask_areas(deletion_index) = [];
+    else
+        deletion_index = deletion_index + 1;
+    end        
+end
+
+% If all areas have been removed because they are all too small, return
+% immediately.
+if isempty(bw_color_mask_areas)
+    bw_relevant_areas = [];
+    return;
 end
 
 % Determine relevant area with biggest area size.

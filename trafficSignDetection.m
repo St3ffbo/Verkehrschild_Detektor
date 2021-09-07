@@ -25,6 +25,13 @@ function abstract_traffic_signs = trafficSignDetection(image, color, debug_mode)
     %% Determine relevant areas from color mask images.
     bw_color_mask_relevant_areas = determineRelevantAreas(bw_color_mask);
     
+    % Check whether any relevant areas were found and return immediately if
+    % not.
+    if isempty(bw_color_mask_relevant_areas)
+        abstract_traffic_signs = {};
+        return
+    end
+    
     % Plot relevant areas if desired.
     if debug_mode
         figure('Name', strcat('Relevant areas (',string(color),')'));
