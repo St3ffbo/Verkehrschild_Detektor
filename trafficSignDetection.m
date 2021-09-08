@@ -37,27 +37,10 @@ function abstract_traffic_signs = trafficSignDetection(image, color, debug_mode)
         figure('Name', strcat('Relevant areas (',string(color),')'));
         imshow(bw_color_mask_relevant_areas);
     end
-    
-    %% Dilate relevant areas.
-    if (color == Color.Yellow)        
-       color_mask_area_boundaries = bwboundaries(bw_color_mask_relevant_areas);
-       number_areas = length(color_mask_area_boundaries);
-       area_widths = zeros(number_areas, 1);
-       for index = 1:number_areas
-           area_widths(index) = size(color_mask_area_boundaries{index}, 1) / 4;
-       end      
-        
-       factor = round(area_widths(1) * 0.6)
-       se = strel('diamond', factor);        
-       dilation_mask = imdilate(bw_color_mask_relevant_areas, se);
-       masked_relevant_area = bsxfun(@times, image, cast(bw_color_mask_relevant_areas, 'like', image));
-       masked_relevant_area_dilated = bsxfun(@times, image, cast(dilation_mask, 'like', image));       
        
-       montage({bw_color_mask_relevant_areas masked_relevant_area; dilation_mask masked_relevant_area_dilated});
-    end    
 
     %% Determine bounding boxes of all relevant areas. Crop relevant areas from image using the bounding boxes.
-    bounding_boxes = determineBoundingBoxes(bw_color_mask_relevant_areas);
+    bounding_boxes = determineBoundingBoxes(bw_color_mask_relevant_areas, color);
     [cropped_images_original, cropped_images_bw] = cropImage(image, bw_color_mask_relevant_areas, bounding_boxes);
     
     % Plot all cropped and black-white cropped images in one montage if desired.

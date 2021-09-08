@@ -25,8 +25,6 @@ for index = 1:number_images
     % Get masked rgb image.
     current_cropped_mask = cropped_images_bw_finetuned{index};
     masked_rgb = bsxfun(@times, cropped_images_original{index}, cast(current_cropped_mask, 'like', cropped_images_original{index}));
-    figure;
-    imshow(masked_rgb);
     
     % Dummy variables.
     ratio = NaN;
@@ -37,8 +35,6 @@ for index = 1:number_images
         case Color.Red
             % Compute red portion of image.
             red_portion_mask = colorMask(Color.Red, masked_rgb);
-            figure('Name', 'Red portion');
-            imshow(red_portion_mask);  
 
             % Compute inner portion of sign.
             inner_portion_mask = logical(current_cropped_mask - red_portion_mask);            
@@ -56,10 +52,6 @@ for index = 1:number_images
             inner_portion_props = regionprops(inner_portion_mask, 'Area');
             inner_portion_areas = extractfield(inner_portion_props, 'Area');
             
-            % Plot filtered inner portion mask.
-            figure('Name', 'Inner portion');
-            imshow(inner_portion_mask);  
-            
             % Get number of inner portion areas.
             number_inner_areas = length(inner_portion_areas);
 
@@ -69,13 +61,9 @@ for index = 1:number_images
                 
                 % Compute rgb masked inner portion.
                 inner_portion_masked_rgb = bsxfun(@times, cropped_images_original{index}, cast(inner_portion_mask, 'like', cropped_images_original{index}));
-                figure('Name', 'Inner portion masked rgb');
-                imshow(inner_portion_masked_rgb);
 
                 % Binarize rgb masked inner portion.
                 inner_content_mask = imbinarize(rgb2gray(inner_portion_masked_rgb));
-                figure('Name', 'Inner portion content mask');
-                imshow(inner_content_mask);
 
                 % Count number of white pixels in inner portion mask and
                 % inner content mask.
@@ -91,7 +79,28 @@ for index = 1:number_images
             end
         
         case Color.Yellow
-            % TODO: Implement!
+            % Dilate the current cropped mask.
+            current_cropped_mask_dilated = dilateYellowArea(current_cropped_mask);
+            
+            % Using the dilated mask, compute the mask for the outer
+            % portion.
+            outer_portion_mask = current_cropped_mask_dilated - current_cropped_mask;
+            
+            % Get the outer portion as a color image.
+            masked_outer_portion = bsxfun(@times, cropped_images_original{index}, cast(outer_portion_mask, 'like', cropped_images_original{index}));
+            
+            % Apply a white mask on the colored outer portion.
+            color_masked_outer_portion = colorMask(Color.White, masked_outer_portion);
+            
+            % Count white pixels of outer portion.
+            count_outer_portion = sum(color_masked_outer_portion(:) == 1);
+            % Count yellow pixels of cropped mask.
+            count_current_cropped_mask = sum(current_cropped_mask(:) == 1);
+            
+            % Compute ratio of white pixels of outer portion and yellow
+            % pixels of cropped mask to identify if the color ratios match
+            % the actual color ratio of the traffic sign.
+            ratio = count_outer_portion / count_current_cropped_mask;
     end
     
     % Create inner content object based on trhe extracted information.
