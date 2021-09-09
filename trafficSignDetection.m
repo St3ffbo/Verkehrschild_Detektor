@@ -50,7 +50,7 @@ function abstract_traffic_signs = trafficSignDetection(image, color, debug_mode)
     end
 
     %% Dilate and erode image each cropped image. Return cropped images with only the biggest area contained.
-     cropped_images_bw_finetuned = dilateErode(cropped_images_bw);
+     cropped_images_bw_finetuned = fineTune(cropped_images_bw);
      
      % Plot all cropped and finetuned images in one montage if desired.
      if debug_mode

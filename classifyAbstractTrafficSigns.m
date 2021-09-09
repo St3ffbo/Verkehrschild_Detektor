@@ -3,17 +3,20 @@
 % the pipeline.
 % Output: The result image containing the traffic sign annotations.
 
-function annotated_image = classifyAbstractTrafficSigns(original_image, abstract_traffic_signs, debug_mode)
+function annotated_image = classifyAbstractTrafficSigns(original_image, abstract_traffic_signs, debug_mode, already_padded)
+
+annotated_image = original_image;
 
 % Check whether abstract traffic signs are available.
-if isempty(abstract_traffic_signs)
-    annotated_image = original_image;
+if isempty(abstract_traffic_signs)    
     return
 end
 
-% Add constant border pixels to image.
+% Add constant border pixels to image if not already done.
 number_constant_pixels = 20;
-annotated_image = padarray(original_image,[number_constant_pixels number_constant_pixels], 'replicate', 'both');
+if ~already_padded    
+    annotated_image = padarray(original_image,[number_constant_pixels number_constant_pixels], 'replicate', 'both');
+end
 
 % Get copy of original_image to annotate.
 number_traffic_signs = size(abstract_traffic_signs, 2);

@@ -4,7 +4,7 @@
 % Input: Cropped black-white images.
 % Output: "Fine-tuned" images as described above.
 
-function finetuned_images_bw = dilateErode(cropped_images_bw)
+function finetuned_images_bw = fineTune(cropped_images_bw)
 
 % Determine number of specified images.
 number_images = size(cropped_images_bw, 2);
