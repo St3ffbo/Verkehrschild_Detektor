@@ -28,7 +28,7 @@ for index = 1:number_images
     
     % Dummy variables.
     ratio = NaN;
-    number_inner_areas = 0;
+    number_inner_areas = NaN;
     
     % Execute actions based on the relevant color.
     switch color
@@ -63,7 +63,7 @@ for index = 1:number_images
                 inner_portion_masked_rgb = bsxfun(@times, cropped_images_original{index}, cast(inner_portion_mask, 'like', cropped_images_original{index}));
 
                 % Binarize rgb masked inner portion.
-                inner_content_mask = imbinarize(rgb2gray(inner_portion_masked_rgb));
+                inner_content_mask = colorMask(Color.White, inner_portion_masked_rgb);
 
                 % Count number of white pixels in inner portion mask and
                 % inner content mask.

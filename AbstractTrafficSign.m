@@ -3,14 +3,14 @@
 classdef AbstractTrafficSign
     properties
         color
-        number_vertices
+        vertex_indices
         bounding_box
         inner_content
     end
     methods
-        function obj = AbstractTrafficSign(color, number_vertices, bounding_box, inner_content)
+        function obj = AbstractTrafficSign(color, vertex_indices, bounding_box, inner_content)
                 obj.color = color;
-                obj.number_vertices = number_vertices;
+                obj.vertex_indices = vertex_indices;
                 obj.bounding_box = bounding_box;
                 obj.inner_content = inner_content;
         end

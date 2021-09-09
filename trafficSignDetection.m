@@ -72,7 +72,7 @@ function abstract_traffic_signs = trafficSignDetection(image, color, debug_mode)
     end
 
     %% Count the vertices of each relevant area.
-    [counted_vertices,fft_arrays]  = vertexCounter(distances_to_outlines);
+    [sorted_indices, fft_arrays]  = vertexCounter(distances_to_outlines);
 
     % Plot FFT of outline distances if desired in one subplot.
     if debug_mode
@@ -90,7 +90,7 @@ function abstract_traffic_signs = trafficSignDetection(image, color, debug_mode)
     inner_content_information = checkInnerContent(color, cropped_images_bw_finetuned, cropped_images_original);
     
     %% Create AbstractTrafficSign objects based on the extracted information.
-    abstract_traffic_signs = createAbstractTrafficSigns(color, counted_vertices, bounding_boxes, inner_content_information);
+    abstract_traffic_signs = createAbstractTrafficSigns(color, sorted_indices, bounding_boxes, inner_content_information);
     
 end
 
