@@ -12,11 +12,11 @@ bw_color_mask_relevant_areas_bb = reshape(extractfield(bw_color_mask_relevant_ar
 % Enlarge bounding boxes depending on the color.
 switch color
     case Color.Red
-        scale = 1.2;
+        scale = 1.1;
     case Color.Yellow
         scale = 1.6;
     otherwise
-        scale = 1.2;
+        scale = 1.1;
 end
 bounding_boxes = zeros(size(bw_color_mask_relevant_areas_bb, 1), 4);
 
